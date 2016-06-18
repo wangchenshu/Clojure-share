@@ -321,12 +321,12 @@ as well as some pseudo-relational algebra support for 'relations',
 which are simply sets of maps - [[http://clojure.github.io/clojure/clojure.set-api.html#clojure.set/select][select]] / [[http://clojure.github.io/clojure/clojure.set-api.html#clojure.set/index][index]] / [[http://clojure.github.io/clojure/clojure.set-api.html#clojure.set/rename][rename]] / [[http://clojure.github.io/clojure/clojure.set-api.html#clojure.set/join][join]].
 
 ** Web Framework
+*** [[https://github.com/ring-clojure/ring][Ring]]
+Clojure HTTP server abstraction
+
 *** [[https://github.com/weavejester/compojure][Compojure]]
 Compojure is a small routing library for [[https://github.com/ring-clojure/ring][Ring]] that allows web applications 
 to be composed of small, independent parts.
-
-*** [[https://github.com/ring-clojure/ring][Ring]]
-Clojure HTTP server abstraction
 
 *** [[https://github.com/luminus-framework][luminus-framework]]
 **** [[https://github.com/luminus-framework/luminus][Luminus]]
@@ -337,3 +337,15 @@ With Luminus you can focus on developing your app the way you want without any d
 **** [[https://github.com/luminus-framework/luminus-template][Luminus-Template]]
 A Leiningen template for projects using [[http://www.luminusweb.net/][Luminus]].
 The template initializes a base Luminus application.
+
+*** [[http://www.http-kit.org/client.html][HTTP kit]]
+HTTP client/server for Clojure
+
+HTTP Kit is a minimalist, efficient, Ring-compatible HTTP client/server for Clojure.
+It uses a event-driven architecture to support highly concurrent a/synchronous web applications.
+Feature a unified API for WebSocket and HTTP long polling/streaming
+
+#+NAME:
+#+BEGIN_SRC
+[http-kit "2.1.18"] ; Add to your project.clj.
+#+END_SRC
