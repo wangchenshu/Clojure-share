@@ -456,7 +456,8 @@ nil
 
 ;; 參考 http://wuchong.me/blog/2015/11/06/learn-clojure-2-syntax/
 #+END_SRC
-** 並發
+
+** Concurrency
 Clojure 處理並發是採用 STM (Software transactional memory)
 
 *** [[https://zh.wikipedia.org/wiki/%E8%BD%AF%E4%BB%B6%E4%BA%8B%E5%8A%A1%E5%86%85%E5%AD%98][軟體事務記憶體]]
@@ -620,6 +621,118 @@ user=> @score
 ;; 因此，send-off比較適合任務有阻塞的操作，如IO讀寫之類。注意，所有的agent是共用這些線程池。
 
 ;; 參考 http://wuchong.me/blog/2015/11/06/learn-clojure-3-concurrent/
+#+END_SRC
+
+*** 特性
+**** Future
+#+NAME:
+#+BEGIN_SRC
+;; 於另一個 Thread 執行任務
+user=> (future (Thread/sleep 4000) (println "hello, I am feture"))
+#object[clojure.core$future_call$reify__6962 0x3854f6e7 {:status :pending, :val nil}]
+user=> (println "I am main")
+I am main
+nil
+user=> hello, I am feture
+
+;; 使用 @ 或 deref 取得 result
+user=> (def jobs (future (println "hello, I am feture") (+ 1 2)))
+hello, I am feture
+#'user/jobs
+user=> @jobs
+3
+user=> (deref jobs)
+3
+
+;; deref 還可以支持 timeout
+user=> (deref (future (Thread/sleep 2000) (+ 1 2)) 1000 (+ 2 3))
+5
+user=> (deref (future (Thread/sleep 500) (+ 1 2)) 1000 (+ 2 3))
+3
+
+;; 用 realized? 判斷 future 是否完成
+user=> (realized? (future (Thread/sleep 1000) (+ 1 2)))
+false
+user=> (let [f (future)]
+  #_=>   @f
+  #_=>   (realized? f))
+true
+#+END_SRC
+
+**** Delay
+#+NAME:
+#+BEGIN_SRC
+user=> (def do-delay
+  #_=>   (delay (println "hello, world!")))
+#'user/do-delay
+
+;; use @
+user=> @do-delay
+hello, world!
+nil
+
+;; or using force
+user=> (force do-delay)
+hello, world!
+nil
+#+END_SRC
+
+**** Promise
+#+NAME:
+#+BEGIN_SRC
+user=> (def do-promise (promise))
+#'user/do-promise
+user=> (deliver do-promise (map inc [1 2 3]))
+#object[clojure.core$promise$reify__7005 0x1701a12d {:status :ready, :val (2 3 4)}]
+
+;; use @
+user=> @do-promise
+(2 3 4)
+
+;; use deref
+user=> (deref do-promise)
+(2 3 4)
+#+END_SRC
+
+**** Watch
+#+NAME:
+#+BEGIN_SRC
+user=> (defn my-watch
+  #_=>   [key watched old-state new-state]
+  #_=>   (if (> new-state 1)
+  #_=>     (println "new" new-state)
+  #_=>     (println "old" old-state)))
+#'user/my-watch
+user=> (def my-atom (atom 1))
+#'user/my-atom
+user=> @my-atom
+1
+user=> (add-watch my-atom :a my-watch)
+#object[clojure.lang.Atom 0x143d6a96 {:status :ready, :val 1}]
+user=> (reset! my-atom 1)
+old 1
+1
+user=> (reset! my-atom 2)
+new 2
+2
+#+END_SRC
+
+**** Validator
+#+NAME:
+#+BEGIN_SRC
+user=> (def validate-num
+  #_=>   #(pos? %))
+#'user/validate-num
+
+user=> (def score (ref 0 :validator validate-num))
+
+CompilerException java.lang.IllegalStateException: Invalid reference state, compiling:(form-init1574102811712753977.clj:1:12)
+
+user=> (def score (ref 2 :validator validate-num))
+#'user/score
+user=> @score
+2
+
 #+END_SRC
 
 ** Web Framework
