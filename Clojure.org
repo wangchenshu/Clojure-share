@@ -167,7 +167,7 @@ user=> (str "hello, " "world")
 "hello, world"
 #+END_SRC
 
-**** KeyWord
+**** Keyword
 #+NAME:
 #+BEGIN_SRC
 user=> :a
@@ -628,16 +628,16 @@ user=> @score
 #+NAME:
 #+BEGIN_SRC
 ;; 於另一個 Thread 執行任務
-user=> (future (Thread/sleep 4000) (println "hello, I am feture"))
+user=> (future (Thread/sleep 4000) (println "hello, I am future"))
 #object[clojure.core$future_call$reify__6962 0x3854f6e7 {:status :pending, :val nil}]
 user=> (println "I am main")
 I am main
 nil
-user=> hello, I am feture
+user=> hello, I am future
 
 ;; 使用 @ 或 deref 取得 result
-user=> (def jobs (future (println "hello, I am feture") (+ 1 2)))
-hello, I am feture
+user=> (def jobs (future (println "hello, I am future") (+ 1 2)))
+hello, I am future
 #'user/jobs
 user=> @jobs
 3
@@ -764,3 +764,8 @@ Feature a unified API for WebSocket and HTTP long polling/streaming.
 #+BEGIN_SRC
 [http-kit "2.1.18"] ; Add to your project.clj.
 #+END_SRC
+** Other
+*** [[https://github.com/puniverse/pulsar][Pulsar]]
+Fibers, Channels and Actors for Clojure
+
+
